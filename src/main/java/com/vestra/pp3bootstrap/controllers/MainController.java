@@ -20,10 +20,10 @@ public class MainController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/")
+    /*@GetMapping("/login")
     public String login(){
-        return "/login";
-    }
+        return "login";
+    }*/
 
     @GetMapping("/admin")
     public String getListUsers(@AuthenticationPrincipal UserDetails userDetails, Model model){
@@ -33,7 +33,7 @@ public class MainController {
         model.addAttribute("userList", userService.getAllUser());
         model.addAttribute("user1", new User());
         model.addAttribute("roleList", roleService.getAllRoles());
-        return "users";
+        return "userPage";
     }
 
     @PostMapping(value="/admin/add")
@@ -81,7 +81,7 @@ public class MainController {
         String name = userDetails.getUsername();
         User user = userService.getByName(name);
         model.addAttribute("user", user);
-        return "userPage";
+        return "adminPage";
     }
 
 }
