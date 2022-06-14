@@ -20,8 +20,8 @@ public class InitDB {
 
     @PostConstruct
     private void addUsersInDB() {
-        User admin = new User("1", "serge", 23, "ya@mail.ru", "1");
-        User user = new User("2", "Doo", 14, "re@mail.ru", "2");
+        User admin = new User("admin", "serge", 23, "ya@mail.ru", "admin");
+        User user = new User("user", "Doo", 14, "re@mail.ru", "user");
         Role adminRole = new Role("ADMIN");
         Role userRole = new Role("USER");
         roleService.addRole(adminRole);
