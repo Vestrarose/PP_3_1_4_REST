@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Transactional
 @Service
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -67,12 +67,4 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findUserByName(name);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails user = userRepository.findUserByName(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("Could not find user with that name");
-        }
-        return user;
-    }
 }

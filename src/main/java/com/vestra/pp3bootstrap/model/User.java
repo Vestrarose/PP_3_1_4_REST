@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Entity
@@ -17,8 +18,7 @@ public class User implements UserDetails {
     private int age;
     private String email;
     private String pass;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
