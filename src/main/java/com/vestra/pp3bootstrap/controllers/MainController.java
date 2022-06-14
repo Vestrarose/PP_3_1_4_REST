@@ -21,8 +21,8 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public String getTestPage(){
-        return "redirect:/login";
+    public String login(){
+        return "/login";
     }
 
     @GetMapping("/admin")

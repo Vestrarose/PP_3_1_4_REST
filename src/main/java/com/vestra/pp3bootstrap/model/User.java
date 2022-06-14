@@ -1,6 +1,6 @@
 package com.vestra.pp3bootstrap.model;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
@@ -11,23 +11,14 @@ import java.util.*;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Long id;
-
-    @Column(name = "Name", unique = true)
     private String name;
-
-
-    @Column(name = "Age", nullable = false)
+    private String lastName;
     private int age;
-
-    @Column(name = "City")
-    private String city;
-
-    @Column(name = "password", nullable = false)
+    private String email;
     private String pass;
-
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -40,15 +31,23 @@ public class User implements UserDetails {
 
     public User() {
     }
-    public User(String name,  int age, String city, String pass, Set<Role> roles){
-        this(name, age, city, pass);
+    public User(String name, int age, String email, String pass, Set<Role> roles){
+        this(name, age, email, pass);
         this.roles = roles;
     }
 
-    public User(String name, int age, String city,  String pass) {
+    public User(String name, String lastName, int age, String email, String pass) {
+        this.name = name;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+        this.pass = pass;
+    }
+
+    public User(String name, int age, String email, String pass) {
         this.name = name;
         this.age = age;
-        this.city = city;
+        this.email = email;
         this.pass = pass;
 
     }
@@ -61,12 +60,12 @@ public class User implements UserDetails {
         this.name = name;
     }
 
-    public String getCity() {
-        return city;
+    public String getEmail() {
+        return email;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setEmail(String city) {
+        this.email = city;
     }
 
     public int getAge() {
@@ -101,8 +100,9 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", city='" + city + '\'' +
+                ", firstName='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
                 ", age=" + age +
                 ", roles=" + roles +
                 '}';
@@ -125,6 +125,10 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return name;
+    }
+
+    public String getLastname(){
+        return lastName;
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -19,11 +20,11 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
-    private final SuccessUserHandler handler;
+    private final SuccessUserHandler successUserHandler;
 
     public WebSecurityConfig(@Qualifier("userServiceImpl") UserDetailsService userDetailsService, SuccessUserHandler handler) {
         this.userDetailsService = userDetailsService;
-        this.handler = handler;
+        this.successUserHandler = handler;
     }
 
     @Bean
@@ -42,21 +43,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        CharacterEncodingFilter filter = new CharacterEncodingFilter();
-        filter.setEncoding("UTF-8");
-        filter.setForceEncoding(true);
-        http.addFilterBefore(filter, CsrfFilter.class);
+            CharacterEncodingFilter filter = new CharacterEncodingFilter();
+            filter.setEncoding("UTF-8");
+            filter.setForceEncoding(true);
+            http.addFilterBefore(filter, CsrfFilter.class);
 
-        http.authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/admin/**").access("hasAnyAuthority('ADMIN')")
-                .antMatchers("/user").access("hasAnyAuthority('USER', 'ADMIN')")
-                .and().formLogin()
-                .successHandler(handler);
-    }
+            http.authorizeRequests()
+                    .antMatchers("/","/login").permitAll()
+                    .antMatchers("/admin/**").access("hasAnyAuthority('ADMIN')")
+                    .antMatchers("/user").access("hasAnyAuthority('USER', 'ADMIN')")
+                    .and().formLogin()
+                    .successHandler(successUserHandler);
+        }
+
     @Bean
-    public static PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public static NoOpPasswordEncoder passwordEncoder() {
+        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
     }
 }
 

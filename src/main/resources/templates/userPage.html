@@ -6,12 +6,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <meta charset="UTF-8">
-    <title>User Page</title>
+    <title>User Information Page</title>
 </head>
 <body>
 <nav class="navbar bg-dark navbar-dark fixed-top">
     <form class="form-inline">
-        <strong><span class="navbar-text text-white" th:text="${user.getName()}" }></span></strong>
+        <strong><span class="navbar-text text-white" th:text="${user.getEmail()}" }></span></strong>
         <span class="navbar-text text-white">&nbspwith roles:&nbsp</span>
         <span class="navbar-text text-white"><a th:each="r: ${user.getRoles()}" th:text="${r.role}+' '"></a> </span>
     </form>
@@ -21,25 +21,30 @@
         </li>
     </ul>
 </nav>
+
 <!--Конец навигационной панели-->
+
 <div class="container-fluid bg-light">
     <div class="row">
         <!--Левый блок админ-панели-->
         <div class="col-sm-2 bg-white min-vh-100">
             <ul class="nav nav-pills flex-column"><br><br><br>
-                <!--<li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN')">
-                    <a class="nav-link" th:href="@{/admin}">Admin</a>-->
+               <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin}">Admin</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" th:href="@{/user}">User</a>
                 </li>
             </ul>
         </div>
+
         <!--Конец левого блока-->
+
         <!--Правый блок админ панели-->
+
         <div class="col-sm-10 bg-light"><br><br><br>
             <p>
-            <h2>User Information-page</h2>
+            <h2>User Information Page</h2>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col border bg-light"><p><h6>About User</h6></p></div>
@@ -49,8 +54,8 @@
                             <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
+                                <th>Name</th>
+                                <th>Age</th>
                                 <th>Email</th>
                                 <th>Role</th>
                             </tr>
@@ -60,7 +65,7 @@
                                 <td th:text="${user.id}"></td>
                                 <td th:text="${user.name}"></td>
                                 <td th:text="${user.age}"></td>
-                                <td th:text="${user.city}"></td>
+                                <td th:text="${user.email}"></td>
                                 <td><a th:each="role : ${user.roles}" th:text="${role.role} + ' '"></a></td>
                             </tr>
                             </tbody>
