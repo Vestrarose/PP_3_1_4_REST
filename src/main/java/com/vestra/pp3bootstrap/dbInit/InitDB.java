@@ -1,4 +1,4 @@
-package com.vestra.pp3bootstrap.registrUser;
+package com.vestra.pp3bootstrap.dbInit;
 
 import com.vestra.pp3bootstrap.model.Role;
 import com.vestra.pp3bootstrap.model.User;
@@ -20,10 +20,10 @@ public class InitDB {
 
     @PostConstruct
     private void addUsersInDB() {
-        User admin = new User("admin", "serge", 23, "ya@mail.ru", "admin");
+        User admin = new User("admin", "ser", 23, "ya@mail.ru", "admin");
         User user = new User("user", "Doo", 14, "re@mail.ru", "user");
-        Role adminRole = new Role("ADMIN");
-        Role userRole = new Role("USER");
+        Role adminRole = new Role("ROLE_ADMIN");
+        Role userRole = new Role("ROLE_USER");
         roleService.addRole(adminRole);
         roleService.addRole(userRole);
         admin.setOneRole(adminRole);

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 
 @Transactional
 @Service
@@ -19,22 +18,27 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Set<Role> getAllRoles() {
+    public void addRole(Role role) {
+        roleRepository.save(role);
+    }
+
+    @Override
+    public void updateRole(Role role) {
+        roleRepository.save(role);
+    }
+
+    @Override
+    public void removeRoleById(long id) {
+        roleRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
 
     @Override
-    public Role getRoleByID(Long id) {
-        return roleRepository.findRoleById(id);
-    }
-
-    @Override
     public Role getRoleByName(String name) {
-        return roleRepository.findRoleByRole(name);
-    }
-
-    @Override
-    public void addRole(Role role) {
-        roleRepository.save(role);
+        return roleRepository.findByName(name);
     }
 }

@@ -1,19 +1,18 @@
 package com.vestra.pp3bootstrap.controllers;
 
+import com.vestra.pp3bootstrap.model.User;
 import com.vestra.pp3bootstrap.service.RoleService;
 import com.vestra.pp3bootstrap.service.UserService;
-import com.vestra.pp3bootstrap.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import javax.transaction.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class MainController {
 
+    @Autowired
     private final UserService userService;
     private final RoleService roleService;
 
@@ -22,68 +21,20 @@ public class MainController {
         this.roleService = roleService;
     }
 
-    /*@GetMapping("/login")
-    public String login(){
-        return "login";
-    }*/
-
-    @GetMapping("/admin")
-    public String getListUsers(@AuthenticationPrincipal UserDetails userDetails, Model model){
-        String name = userDetails.getUsername();
-        User user = userService.getByName(name);
+    @GetMapping(value = "/user")
+    public String userInfo(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("user", user);
-        model.addAttribute("userList", userService.getAllUser());
-        model.addAttribute("user1", new User());
-        model.addAttribute("roleList", roleService.getAllRoles());
+        model.addAttribute("roles", user.getRoles());
         return "userPage";
     }
 
-    @PostMapping(value="/admin/add")
-    public String saveUser(@ModelAttribute User user1,
-                           @RequestParam(value = "checked", required = false ) Long[] checked){
-        if (checked == null) {
-            user1.setOneRole(roleService.getRoleByName("USER"));
-        } else {
-            for (Long aLong : checked) {
-                if (aLong != null) {
-                    user1.setOneRole(roleService.getRoleByID(aLong));
-                }
-            }
-        }
-        userService.addUser(user1);
-        return "redirect:/admin";
-    }
-
-    @PatchMapping(value="/admin/edit/{id}")
-    public String updateUser(@ModelAttribute User user,
-                             @RequestParam(value = "checked", required = false ) Long[] checked) {
-        if (checked == null) {
-            user.setOneRole(roleService.getRoleByName("USER"));
-            userService.updateUser(user);
-        } else {
-            for (Long aLong : checked) {
-                if (aLong != null) {
-                    user.setOneRole(roleService.getRoleByID(aLong));
-                    userService.updateUser(user);
-                }
-            }
-        }
-        return "redirect:/admin";
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public String getUserId(@PathVariable(value="id")Long id) {
-        userService.deleteById(id);
-        return "redirect:/admin";
-    }
-
-    @GetMapping("/user")
-    public String getUserInfo(@AuthenticationPrincipal UserDetails userDetails,
-                              Model model){
-        String name = userDetails.getUsername();
-        User user = userService.getByName(name);
+    @GetMapping(value = "/admin")
+    public String listUsers(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("user", user);
+        model.addAttribute("allUsers", userService.getAllUsers());
+        model.addAttribute("allRoles", roleService.getAllRoles());
         return "adminPage";
     }
+
 
 }

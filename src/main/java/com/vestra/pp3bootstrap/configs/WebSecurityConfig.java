@@ -19,42 +19,19 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final UserDetailsService userDetailsService;
-    private final SuccessUserHandler successUserHandler;
-
-    public WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService, SuccessUserHandler handler) {
-        this.userDetailsService = userDetailsService;
-        this.successUserHandler = handler;
-    }
-
-    @Bean
-    public DaoAuthenticationProvider authProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
-
-    @Autowired
-    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-            CharacterEncodingFilter filter = new CharacterEncodingFilter();
-            filter.setEncoding("UTF-8");
-            filter.setForceEncoding(true);
-            http.addFilterBefore(filter, CsrfFilter.class);
-
-            http.authorizeRequests()
-                    .antMatchers("/","/login").permitAll()
-                    .antMatchers("/admin/**").access("hasAnyAuthority('ADMIN')")
-                    .antMatchers("/user").access("hasAnyAuthority('USER', 'ADMIN')")
-                    .and().formLogin()
-                    .successHandler(successUserHandler);
-        }
+        http.authorizeRequests()
+                .antMatchers( "/login", "/logout").permitAll()
+                .antMatchers("/user/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+                .antMatchers("/admin/**").access("hasAnyRole('ROLE_ADMIN')")
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .successHandler(new SuccessUserHandler())
+                .and().csrf().disable();
+    }
 
     @Bean
     public static NoOpPasswordEncoder passwordEncoder() {

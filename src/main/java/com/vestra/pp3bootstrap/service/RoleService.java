@@ -3,11 +3,15 @@ package com.vestra.pp3bootstrap.service;
 import com.vestra.pp3bootstrap.model.Role;
 
 import java.util.List;
-import java.util.Set;
 
 public interface RoleService {
-    Set<Role> getAllRoles();
-    Role getRoleByID(Long id);
-    Role getRoleByName(String name);
+    List<Role> getAllRoles();
+
+    void updateRole(Role role);
+
+    void removeRoleById(long id);
+
     void addRole(Role role);
+
+    Role getRoleByName(String name);
 }

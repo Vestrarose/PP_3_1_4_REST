@@ -1,15 +1,18 @@
 package com.vestra.pp3bootstrap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
 import javax.persistence.*;
-import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,38 +20,40 @@ public class User implements UserDetails {
     private String lastName;
     private int age;
     private String email;
-    private String pass;
-    @ManyToMany(fetch = FetchType.LAZY)
+    private String password;
+
+    @ManyToMany(fetch = FetchType.LAZY)//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     @JoinTable(
             name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
     private Set<Role> roles;
 
     public void setPassword(String pass) {
-        this.pass = pass;
+        this.password = pass;
     }
 
     public User() {
+
     }
-    public User(String name, int age, String email, String pass, Set<Role> roles){
-        this(name, age, email, pass);
+    public User(String name, int age, String email, String password, Set<Role> roles){
+        this(name, age, email, password);
         this.roles = roles;
     }
 
-    public User(String name, String lastName, int age, String email, String pass) {
+    public User(String name, String lastName, int age, String email,  String password) {
         this.name = name;
         this.lastName = lastName;
         this.age = age;
         this.email = email;
-        this.pass = pass;
+        this.password = password;
     }
 
-    public User(String name, int age, String email, String pass) {
+    public User(String name, int age, String email, String password) {
         this.name = name;
         this.age = age;
         this.email = email;
-        this.pass = pass;
+        this.password = password;
 
     }
 
@@ -60,12 +65,20 @@ public class User implements UserDetails {
         this.name = name;
     }
 
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getLastName(){
+        return lastName;
+    }
+
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String city) {
-        this.email = city;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getAge() {
@@ -100,7 +113,7 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", firstName='" + name + '\'' +
+                ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", age=" + age +
@@ -119,16 +132,12 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return pass;
+        return password;
     }
 
     @Override
     public String getUsername() {
         return name;
-    }
-
-    public String getLastname(){
-        return lastName;
     }
 
     @Override
@@ -150,6 +159,17 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    /*@Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return age == user.age && id.equals(user.id) && name.equals(user.name) && email.equals(user.email) && password.equals(user.password) && Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email, age, password, roles);
+    } */
 }
-
-
